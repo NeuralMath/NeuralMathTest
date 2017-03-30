@@ -30,6 +30,11 @@ public class DrawingView extends View {
     private Handler saveHandler;
     private Context context;
 
+    /**
+     * Constructeur par défault
+     *
+     * @param c     Le context de l'App
+     */
     public DrawingView(Context c) {
         super(c);
         context = c;
@@ -40,7 +45,7 @@ public class DrawingView extends View {
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
-        drawPaint.setStrokeWidth(30);
+        drawPaint.setStrokeWidth(20);
         setWillNotDraw(false);
 
         saveHandler = new Handler();
@@ -57,7 +62,6 @@ public class DrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         canvas.drawBitmap(canvasBitmap, 0, 0, drawPaint);
         canvas.drawPath(path, drawPaint);
     }

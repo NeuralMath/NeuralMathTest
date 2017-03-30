@@ -48,11 +48,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set le bitmap pour l'AI
+     *
+     * @param btm       L'image
+     */
     public void setBitmap(Bitmap btm)
     {
         try {
             drawPage.getTextEquation().append(imageDecoder.findSting(btm));
-            Toast.makeText(this, "Written", Toast.LENGTH_SHORT).show();
         }
         catch(Exception ex)
         {

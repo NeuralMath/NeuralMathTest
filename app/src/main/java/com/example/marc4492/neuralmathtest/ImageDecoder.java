@@ -42,8 +42,6 @@ public class ImageDecoder {
 
         squaredPixNumber = (int) Math.sqrt(input);
 
-        System.out.println("TESTTTTTTTTTTTTTTTTTTTTTTTT");
-
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,7 +51,6 @@ public class ImageDecoder {
                         @Override
                         public void run() {
                             Toast.makeText(context, "Done", Toast.LENGTH_SHORT).show();
-                            System.out.println("DOOOOOONNNNEEEEEEEEEEEE");
                         }
                     });
                 } catch (IOException ex) {
@@ -75,7 +72,7 @@ public class ImageDecoder {
      *
      * @param btm L'image à décoder
      * @return l'équation en String
-     * @throws Exception S'il y a des problème avec l'image
+     * @throws IOException S'il y a des problème avec l'image
      */
     public String findSting(Bitmap btm) throws IOException {
         listChar.clear();
@@ -98,7 +95,7 @@ public class ImageDecoder {
      * Split les différents caractère de l'image
      *
      * @param btm               L'image à analyser
-     * @throws Exception        S'il y a des problèmes
+     * @throws IOException        S'il y a des problèmes
      */
     private void splitChar(Bitmap btm) throws IOException
     {
@@ -111,7 +108,7 @@ public class ImageDecoder {
             whiteLine = true;
             for (int j = 0; j < btm.getHeight(); j++) {
                 pixel = btm.getPixel(i, j);
-                if(Color.red(pixel) <= 0x0C && Color.green(pixel) <= 0x0C && Color.blue(pixel) <= 0x0C)
+                if(Color.red(pixel) < 0x0C && Color.green(pixel) < 0x0C && Color.blue(pixel) < 0x0C)
                 {
                     whiteLine = false;
                     break ;
@@ -124,19 +121,19 @@ public class ImageDecoder {
         if(listWhite.size() > 1 && listWhite.size() < btm.getWidth()) {
             //Si la premiere ligne est noir
             if(listWhite.get(0) != 0)
-                listChar.add(resize(crop(btm, 0, 0, listWhite.get(0), btm.getHeight()), 30, 30));
+                listChar.add(resize(crop(btm, 0, 0, listWhite.get(0), btm.getHeight()), squaredPixNumber, squaredPixNumber));
 
             //Les caractère avec une ligne blance de chaque c¸eté sont couper et ajouter à la liste
             for (int i = 1; i < listWhite.size(); i++)
                 if (listWhite.get(i) - listWhite.get(i - 1) > 1)
-                    listChar.add(resize(crop(btm, listWhite.get(i - 1), 0, listWhite.get(i), btm.getHeight()), 30, 30));
+                    listChar.add(resize(crop(btm, listWhite.get(i - 1), 0, listWhite.get(i), btm.getHeight()), squaredPixNumber, squaredPixNumber));
 
             //Si la derniere ligne est noir
             if(listWhite.get(listWhite.size()-1) != btm.getWidth()-1)
-                listChar.add(resize(crop(btm, listWhite.get(listWhite.size()-1), 0, btm.getWidth(), btm.getHeight()), 30, 30));
+                listChar.add(resize(crop(btm, listWhite.get(listWhite.size()-1), 0, btm.getWidth(), btm.getHeight()), squaredPixNumber, squaredPixNumber));
         }
         else if(listWhite.size() == 0)
-            listChar.add(resize(btm, 30, 30));
+            listChar.add(resize(btm, squaredPixNumber, squaredPixNumber));
     }
 
     /**
@@ -144,7 +141,7 @@ public class ImageDecoder {
      *
      * @param bitmap        L'image
      * @return              L'image rogner
-     * @throws Exception    S'il y a des problèmes
+     * @throws IOException    S'il y a des problèmes
      */
     private Bitmap crop(Bitmap bitmap, int startX, int startY, int endX, int endY) throws IOException
     {
@@ -158,7 +155,7 @@ public class ImageDecoder {
      * @param width         Largeur du resize
      * @param height        Hauteur du resize
      * @return              L'image resized
-     * @throws Exception    S'il y a des problèmes
+     * @throws IOException    S'il y a des problèmes
      */
     private Bitmap resize(Bitmap bitmap, int width, int height) throws IOException
     {
@@ -170,7 +167,7 @@ public class ImageDecoder {
      *
      * @param bitmap        L'image
      * @return              Un tableau de int selon les pixels(1 ou 0)
-     * @throws Exception    S'il y a des problèmes
+     * @throws IOException    S'il y a des problèmes
      */
     private int[]getIOPixels(Bitmap bitmap) throws IOException
     {

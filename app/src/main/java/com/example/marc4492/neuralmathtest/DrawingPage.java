@@ -43,12 +43,10 @@ public class DrawingPage extends LinearLayout {
             }
         });
 
-
         //Creation of the button layout
         layoutBtn = new LinearLayout(context);
         layoutBtn.setOrientation(LinearLayout.VERTICAL);
         layoutBtn.addView(btnRetry);
-
 
         setOrientation(LinearLayout.HORIZONTAL);
         addViewsInThePage();
