@@ -52,8 +52,9 @@ public class MainActivity extends AppCompatActivity {
     {
         try {
             drawPage.getTextEquation().append(imageDecoder.findSting(btm));
+            Toast.makeText(this, "Written", Toast.LENGTH_SHORT).show();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
             Toast.makeText(this, ex.toString(), Toast.LENGTH_SHORT).show();
         }

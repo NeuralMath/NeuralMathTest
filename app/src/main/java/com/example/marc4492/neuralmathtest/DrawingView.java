@@ -3,11 +3,11 @@ package com.example.marc4492.neuralmathtest;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.os.Handler;
-import android.support.v4.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -22,72 +22,63 @@ import android.view.View;
 
 public class DrawingView extends View {
 
-    private Bitmap  mBitmap;
-    private Canvas  mCanvas;
-    private Path    mPath;
-    private Context context;
-    private Paint mPaint;
-    private Handler saveHandler;
+    Paint drawPaint;
+    private Path path = new Path();
 
-    /**
-     * Constructeur par défaut, création du style de l'écriture
-     * @param c     Contexte de l'app
-     */
+    private Canvas drawCanvas;
+    private Bitmap canvasBitmap;
+    private Handler saveHandler;
+    private Context context;
+
     public DrawingView(Context c) {
         super(c);
         context = c;
-        mPath = new Path();
 
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setColor(ContextCompat.getColor(context, R.color.black));
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(20);
-
-        setDrawingCacheEnabled(true);
+        drawPaint = new Paint(Paint.DITHER_FLAG);
+        drawPaint.setAntiAlias(true);
+        drawPaint.setColor(Color.parseColor("#000000"));
+        drawPaint.setStyle(Paint.Style.STROKE);
+        drawPaint.setStrokeJoin(Paint.Join.ROUND);
+        drawPaint.setStrokeCap(Paint.Cap.ROUND);
+        drawPaint.setStrokeWidth(30);
+        setWillNotDraw(false);
 
         saveHandler = new Handler();
+
+        setBackgroundResource(R.drawable.colored_border);
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        //Créer le bitmpa dasn lequel le canvas va s'enregistrer
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+    protected void onSizeChanged(int w, int h, int width, int height) {
+        super.onSizeChanged(w, h, width, height);
+        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        drawCanvas = new Canvas(canvasBitmap);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        //Save le canvas dasn le bitmap
-        canvas.drawBitmap(mBitmap, 0, 0, mPaint);
-        canvas.drawPath(mPath, mPaint);
+        canvas.drawBitmap(canvasBitmap, 0, 0, drawPaint);
+        canvas.drawPath(path, drawPaint);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-
-        //Actions selon le touvher
-        switch (event.getAction()) {
+        switch (event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                mPath.moveTo(x, y);
-                break;
+                path.moveTo(x, y);
+                return true;
             case MotionEvent.ACTION_MOVE:
-                mPath.lineTo(x, y);
+                path.lineTo(x, y);
                 break;
             case MotionEvent.ACTION_UP:
-                mPath.lineTo(x, y);
-                mCanvas.drawPath(mPath,  mPaint);
-                mPath.reset();
+                drawCanvas.drawPath(path, drawPaint);
+                path.reset();
                 break;
+            default:
+                return false;
         }
         invalidate();
 
@@ -101,10 +92,10 @@ public class DrawingView extends View {
     /**
      * Clear the canvas and stop the saving timer
      */
-    public void clear()
-    {
-        mCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+    public void clear(){
+        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
+        saveHandler.removeCallbacks(run);
     }
 
     /**
@@ -113,7 +104,9 @@ public class DrawingView extends View {
     private Runnable run = new Runnable() {
         @Override
         public void run() {
-            ((MainActivity)context).setBitmap(getDrawingCache());
+            setDrawingCacheEnabled(true);
+            ((MainActivity) context).setBitmap(getDrawingCache());
+            setDrawingCacheEnabled(false);
             clear();
         }
     };

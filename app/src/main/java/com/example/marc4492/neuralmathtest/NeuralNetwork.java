@@ -84,6 +84,7 @@ public class NeuralNetwork {
      */
     public int getAnwser(int[] input)
     {
+        System.out.println(input.length);
         int posMax = 0;
 
         //Copier les valeurs sans touché à la valeur de bias
