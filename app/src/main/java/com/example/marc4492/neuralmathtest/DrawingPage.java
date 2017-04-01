@@ -62,6 +62,15 @@ public class DrawingPage extends LinearLayout {
     }
 
     /**
+     * Getter du drawing view
+     * @return      Drawing View
+     */
+    public DrawingView getDrawView()
+    {
+        return drawView;
+    }
+
+    /**
      * This add view for right-handed by default when the DrawingPage is created
      */
     private void addViewsInThePage(){

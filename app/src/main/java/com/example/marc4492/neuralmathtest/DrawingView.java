@@ -30,6 +30,8 @@ public class DrawingView extends View {
     private Handler saveHandler;
     private Context context;
 
+    private DrawnListener listener;
+
     /**
      * Constructeur par défault
      *
@@ -103,15 +105,33 @@ public class DrawingView extends View {
     }
 
     /**
+     * Set le listener pour le callback
+     *
+     * @param dL        Le listener
+     */
+    public void setListener(DrawnListener dL)
+    {
+        listener = dL;
+    }
+
+    /**
      * The runnable that calls saveCharacter and clear functions after a set delay
      */
     private Runnable run = new Runnable() {
         @Override
         public void run() {
             setDrawingCacheEnabled(true);
-            ((MainActivity) context).setBitmap(getDrawingCache());
+            listener.drawn(getDrawingCache());
             setDrawingCacheEnabled(false);
             clear();
         }
     };
+
+    /**
+     * Un listener custom pour l'event quand le user a fini d'ecrire
+     */
+    public interface DrawnListener
+    {
+        void drawn(Bitmap b);
+    }
 }

@@ -79,14 +79,19 @@ public class ImageDecoder {
         String line = "";
 
         //Split toutes les chars
-        splitChar(btm);
+        /*splitChar(btm);
 
         //Add le char dans l'eq
         for (int i = 0; i < listChar.size(); i++) {
             int[] pix = getIOPixels(listChar.get(i));
             int index = network.getAnwser(pix);
             line += charList[index];
-        }
+        }*/
+
+        btm = resize(btm, squaredPixNumber, squaredPixNumber);
+        int[] pix = getIOPixels(btm);
+        int index = network.getAnwser(pix);
+        line += charList[index];
 
         return line;
     }

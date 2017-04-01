@@ -38,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         drawPage = (DrawingPage) findViewById(R.id.drawPage);
+        drawPage.getDrawView().setListener(new DrawingView.DrawnListener() {
+            @Override
+            public void drawn(Bitmap b) {
+                setBitmap(b);
+            }
+        });
 
         try {
             imageDecoder = new ImageDecoder(this, INPUT, HIDDEN, OUTPUT, TRAININGRATE, fileWeightsItoH, fileWeightsHtoO, charList);
